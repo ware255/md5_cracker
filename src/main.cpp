@@ -181,7 +181,7 @@ void md5_update(md5_context *ctx, uint8 *input, uint32 length) {
     }
 
     while (length >= 64) {
-        md5_process( ctx, input );
+        md5_process(ctx, input);
         length -= 64;
         input  += 64;
     }
@@ -229,32 +229,31 @@ int main(int argc, char *argv[]) {
     char md5String[33], tmp[1024];
     int i, j, t;
 
-    FILE *fp = fopen(argv[2], "r");
+    if (argc <= 2) {
+        printf("Usage: %s <hash> <file_name>\n", argv[0]);
+        return 1;
+    }
 
+    FILE *fp = fopen(argv[2], "r");
     if (fp == NULL) return 1;
 
-    if (argc != 0) {
-        t = 1;
-        for (i = 0; fgets(tmp, MAX, fp) != NULL; i++) {
-            tmp[strcspn(tmp, "\r\n")] = 0;
-            md5_starts(&ctx);
-            md5_update(&ctx, (uint8 *)tmp, strlen(tmp));
-            md5_finish(&ctx, md5sum);
-            for (j = 0; j < 16; j++) {
-                sprintf(&md5String[j+j], "%02x", md5sum[j]);
-            }
-            if (!strcmp(md5String, argv[1])) {
-                printf("password: %s\n", tmp);
-                t = 0;
-                break;
-            }
+    t = 1;
+    for (i = 0; fgets(tmp, MAX, fp) != NULL; i++) {
+        tmp[strcspn(tmp, "\r\n")] = 0;
+        md5_starts(&ctx);
+        md5_update(&ctx, (uint8 *)tmp, strlen(tmp));
+        md5_finish(&ctx, md5sum);
+        for (j = 0; j < 16; j++) {
+            sprintf(&md5String[j+j], "%02x", md5sum[j]);
         }
-        if (t != 0) {
-            printf("password not found!\n");
+        if (!strcmp(md5String, argv[1])) {
+            printf("password found: %s\n", tmp);
+            t = 0;
+            break;
         }
     }
-    else {
-        printf("使い方: %s <hash> <file_name>\n", argv[0]);
+    if (t != 0) {
+        printf("password not found!\n");
     }
 
     fclose(fp);
