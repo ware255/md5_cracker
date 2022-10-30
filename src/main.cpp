@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <string>
-#define MAX    1024 /* ファイルの最大行数 */
+#define MAX    1024 /* 読み込みサイズ */
 #define uint8  unsigned char
 #define uint32 unsigned long int
 #define GET_UINT32(n,b,i)               \
@@ -226,7 +226,7 @@ void md5_finish(md5_context *ctx, uint8 digest[16]) {
 int main(int argc, char *argv[]) {
     md5_context ctx;
     unsigned char md5sum[16];
-    char md5String[33], tmp[1024];
+    char md5String[33], tmp[MAX];
     int i, j, t;
 
     if (argc <= 2) {
@@ -234,7 +234,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    FILE *fp = fopen(argv[2], "r");
+    FILE *fp = fopen(argv[2], "r+");
     if (fp == NULL) return 1;
 
     t = 1;
