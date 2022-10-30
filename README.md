@@ -10,6 +10,8 @@ $ make
 ```
 
 ## 実行方法
+hashは、MD5でしか対応しておりません。<br>
+file_nameは、rockyou.txtなどのファイルを自分で用意して実行してください。
 ```
 $ md5_cracker <hash> <file_name>
 ```
